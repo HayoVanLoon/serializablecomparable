@@ -20,6 +20,6 @@ public class ProtobufSerializer {
       throws IOException {
 
     builder.mergeFrom(serialized);
-    return (T)builder.build();
+    return (T) builder.build();
   }
 }

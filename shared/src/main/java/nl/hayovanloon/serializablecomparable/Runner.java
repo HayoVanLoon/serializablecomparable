@@ -23,7 +23,7 @@ public class Runner {
   /** number of iterations over data set */
   protected final int cycles;
 
-  /** maximum simulation duration in seconds*/
+  /** maximum simulation duration in seconds */
   protected final int maxDuration;
 
   /** data generator/reader */
@@ -75,7 +75,7 @@ public class Runner {
   /**
    * Human-readable serialization name
    *
-   * @return  the serialization name
+   * @return the serialization name
    */
   protected String getName() {
     return serializer.getName();
@@ -83,7 +83,6 @@ public class Runner {
 
   /**
    * Runs the simulation
-   *
    */
   public void run() throws IOException, ClassNotFoundException {
     final List<LocalMessage> messages = generator.retrieve();

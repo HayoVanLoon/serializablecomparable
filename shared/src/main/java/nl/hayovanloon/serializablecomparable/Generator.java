@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 /**
  * This class generates a data file, which forms the input file for all
  * projects.
- *
+ * <p>
  * It is also used to deserialize that data again.
  */
 public class Generator {
@@ -41,8 +41,8 @@ public class Generator {
   /**
    * Factory method for a generator.
    *
-   * @param args  command line arguments
-   * @return  a new Generator
+   * @param args command line arguments
+   * @return a new Generator
    */
   public static Generator of(String[] args) {
     final Supplier<LocalMessage> supplier;
@@ -65,7 +65,7 @@ public class Generator {
   /**
    * Generates a data file
    *
-   * @param n   number of items to create and serialize
+   * @param n number of items to create and serialize
    */
   public void generate(int n) throws IOException {
     try (
@@ -82,8 +82,6 @@ public class Generator {
    * Deserializes the items created by {@link #generate}.
    *
    * @return a list of messages
-   * @throws IOException
-   * @throws ClassNotFoundException
    */
   public List<LocalMessage> retrieve()
       throws IOException, ClassNotFoundException {

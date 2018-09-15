@@ -1,7 +1,7 @@
 package nl.hayovanloon.serializablecomparable.protobuf;
 
-import nl.hayovanloon.serializablecomparable.protobuf.generated.SimplePb;
 import nl.hayovanloon.serializablecomparable.Simple;
+import nl.hayovanloon.serializablecomparable.protobuf.generated.SimplePb;
 
 
 /**
@@ -16,8 +16,8 @@ public final class SimplePbOps {
   /**
    * Creates a {@link SimplePb} message from a Simple POJO.
    *
-   * @param simple  data container
-   * @return  a new SimplePb
+   * @param simple data container
+   * @return a new SimplePb
    */
   public static SimplePb from(Simple simple) {
     return SimplePb.newBuilder()

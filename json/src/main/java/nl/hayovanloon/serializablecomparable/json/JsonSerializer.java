@@ -19,6 +19,6 @@ public class JsonSerializer implements Serializer {
   }
 
   public <T> T deserialize(byte[] bytes, Class<T> type) throws IOException {
-      return OBJECT_MAPPER.readValue(bytes, type);
+    return OBJECT_MAPPER.readValue(bytes, type);
   }
 }

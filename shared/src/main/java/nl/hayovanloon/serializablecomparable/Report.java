@@ -18,13 +18,14 @@ public final class Report {
 
   /**
    * Prints a simple report to the standard output.
-   * @param name            name of the serializer
-   * @param sizes           sizes of the items
-   * @param timestamps      item creation timestamps
-   * @param startTimestamp  start time
-   * @param endTimestamp    end time
-   * @param count           number of items created
-   * @param maxDuration     maximum duration
+   *
+   * @param name           name of the serializer
+   * @param sizes          sizes of the items
+   * @param timestamps     item creation timestamps
+   * @param startTimestamp start time
+   * @param endTimestamp   end time
+   * @param count          number of items created
+   * @param maxDuration    maximum duration
    */
   public static void report(String name,
                             Iterable<Integer> sizes,
@@ -36,7 +37,7 @@ public final class Report {
     final Iterator<Integer> sizeIter = sizes.iterator();
     final Iterator<Long> tsIter = timestamps.iterator();
 
-    final int duration = (int)(endTimestamp - startTimestamp) / 1000;
+    final int duration = (int) (endTimestamp - startTimestamp) / 1000;
     if (duration == 0) {
       throw new IllegalStateException("nothing to report");
     }
@@ -47,13 +48,13 @@ public final class Report {
     for (int i = 0; i < count; i += 1) {
       final int size = sizeIter.next();
       final long timestamp = tsIter.next();
-      hits[(int)Math.floorDiv(timestamp - startTimestamp, 1000)] += 1;
+      hits[(int) Math.floorDiv(timestamp - startTimestamp, 1000)] += 1;
       acc += size;
     }
 
     // create a somewhat decent table
     final StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < hits.length;  i += 1) {
+    for (int i = 0; i < hits.length; i += 1) {
       if (i % PER_LINE == 0) {
         if (i == 0) {
           sb.append("  0 to ");
@@ -77,9 +78,9 @@ public final class Report {
             "\nAverage time/item: %s microseconds" +
             "\n" +
             "\n%s\n",
-        count / 1000, BigDecimal.valueOf(acc / (double)count).intValue(),
+        count / 1000, BigDecimal.valueOf(acc / (double) count).intValue(),
         duration, maxDuration,
-        BigDecimal.valueOf(duration / (double)count * 1000000)
+        BigDecimal.valueOf(duration / (double) count * 1000000)
             .setScale(2, BigDecimal.ROUND_HALF_DOWN).toPlainString(),
         sb.toString()
     );

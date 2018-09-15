@@ -2,9 +2,9 @@ package nl.hayovanloon.serializablecomparable.protobuf;
 
 import com.google.protobuf.Message;
 import nl.hayovanloon.serializablecomparable.Generator;
+import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Nested;
 import nl.hayovanloon.serializablecomparable.Runner;
-import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Simple;
 
 import java.time.Instant;
@@ -40,7 +40,7 @@ public class PbRunner extends Runner {
    * Overrides base method as each POJO has to be converted to a protobuf
    * Message object.
    *
-   * @param messages  messages tol serialize
+   * @param messages messages tol serialize
    */
   @Override
   protected void iterate(Iterable<LocalMessage> messages) {
@@ -51,10 +51,10 @@ public class PbRunner extends Runner {
 
       final byte[] serialized;
       if (generator.getType() == Simple.class) {
-        final Message m = SimplePbOps.from((Simple)message);
+        final Message m = SimplePbOps.from((Simple) message);
         serialized = SERIALIZER.serialize(m);
       } else {
-        final Message m = NestedPbOps.from((Nested)message);
+        final Message m = NestedPbOps.from((Nested) message);
         serialized = SERIALIZER.serialize(m);
       }
 

@@ -4,6 +4,7 @@ import nl.hayovanloon.serializablecomparable.Nested;
 import nl.hayovanloon.serializablecomparable.Simple;
 import nl.hayovanloon.serializablecomparable.protobuf.generated.NestedPb;
 
+
 /**
  * Utility class for {@link NestedPb} operations.
  */
@@ -17,10 +18,10 @@ public final class NestedPbOps {
    * Creates a {@link NestedPb} message from a Simple POJO.
    *
    * @param nested data container
-   * @return  a new NestedPb
+   * @return a new NestedPb
    */
   public static NestedPb from(Nested nested) {
-    final NestedPb.Builder builder =NestedPb.newBuilder()
+    final NestedPb.Builder builder = NestedPb.newBuilder()
         .setStringValue(nested.getStringValue())
         .setLongValue(nested.getLongValue())
         .setIntValue(nested.getIntValue())

@@ -10,6 +10,7 @@ import java.io.IOException;
 public class Main {
 
   private static final Serializer SERIALIZER = new JsonSerializer();
+
   public static void main(String[] args)
       throws IOException, ClassNotFoundException {
 
