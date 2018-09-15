@@ -55,12 +55,12 @@ public final class Report {
     final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < hits.length;  i += 1) {
       if (i % PER_LINE == 0) {
-        if (i > 0) {
-          sb.append("\n").append(i).append("\tto\t").append(i + PER_LINE - 1);
+        if (i == 0) {
+          sb.append("  0 to ");
         } else {
-          sb.append("0\tto\t").append(PER_LINE - 1);
+          sb.append("\n").append(fill(Integer.toString(i), 3)).append(" to ");
         }
-        sb.append("s: ");
+        sb.append(fill(Integer.toString(i + PER_LINE - 1), 3)).append("s: ");
       } else {
         sb.append(",\t");
       }
@@ -85,5 +85,9 @@ public final class Report {
     );
 
     System.out.println(message);
+  }
+
+  private static String fill(String s, int length) {
+    return length - s.length() <= 0 ? s : fill(' ' + s, length);
   }
 }
