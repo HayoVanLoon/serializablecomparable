@@ -20,7 +20,7 @@ They will then serialize the objects sequentially through their own
 serialization method. Upon serializtion, the creation time and size of the 
 serialised object are recorded.
 
-Each simulator will printi a small report to the standard output upon 
+Each simulator will print a small report to the standard output upon 
 completion. 
 
 
