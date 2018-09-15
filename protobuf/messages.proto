@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package nl.hayovanloon.serializablecomparable.protobuf.generated;
+
+option java_multiple_files = true;
+
+message SimplePb {
+    string string_value = 1;
+    int64 long_value = 2;
+    int32 int_value = 3;
+    double double_value = 4;
+    float float_value = 5;
+    bool bool_value = 6;
+}
+
+message NestedPb {
+    string string_value = 1;
+    int64 long_value = 2;
+    int32 int_value = 3;
+    double double_value = 4;
+    float float_value = 5;
+    bool bool_value = 6;
+
+    repeated int64 long_list = 7;
+    SimplePb simple = 8;
+    repeated SimplePb simples = 9;
+}

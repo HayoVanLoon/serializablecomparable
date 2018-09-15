@@ -1,0 +1,15 @@
+tmp/**
+*/target/**
+target/**
+bin/**
+
+.classpath
+
+.project
+.settings/**
+.idea/**
+
+*.iml
+
+*.out
+*/generated/**
