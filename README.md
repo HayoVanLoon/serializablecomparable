@@ -12,10 +12,16 @@ Currently contains:
 By default 10k objects are generated and written to a file using native Java 
 serialization.
 
-This file is then read by each of the simulators. The objects are deserialized
-through standard Java serialization and then serialized by each simulators own
-serialization method.
+This file then serves as input for the simulators. These will deserialize those 
+objects again through standard Java serialization and store the entire data set 
+in memory.
 
+They will then serialize the objects sequentially through their own 
+serialization method. Upon serializtion, the creation time and size of the 
+serialised object are recorded.
+
+Each simulator will printi a small report to the standard output upon 
+completion. 
 
 
 ## Prerequisites
@@ -40,4 +46,10 @@ make generate
 Run all simulators.
 ```bash
 make run
+```
+
+You can also run a specific simulator by adding its short id. You will have to 
+provide TYPE (simple/nested) and SRC (data file) parameters though
+```bash
+make run-protobuf TYPE=nested SRC=`pwd`/data.out
 ```
