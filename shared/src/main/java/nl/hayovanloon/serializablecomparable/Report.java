@@ -19,13 +19,13 @@ public final class Report {
   /**
    * Prints a simple report to the standard output.
    *
-   * @param name           name of the serializer
-   * @param sizes          sizes of the items
-   * @param timestamps     item creation timestamps
-   * @param start start time
-   * @param end   end time
-   * @param count          number of items created
-   * @param maxDuration    maximum duration
+   * @param name        name of the serializer
+   * @param sizes       sizes of the items
+   * @param timestamps  item creation timestamps
+   * @param start       start time
+   * @param end         end time
+   * @param count       number of items created
+   * @param maxDuration maximum duration
    */
   public static void reportSerialization(String name,
                                          Iterable<Integer> sizes,
@@ -92,10 +92,10 @@ public final class Report {
   /**
    * Prints a simple report to the standard output.
    *
-   *  @param maxDuration    maximum duration
-   * @param start start time
-   * @param end   end time
-   * @param count          number of items created
+   * @param maxDuration maximum duration
+   * @param start       start time
+   * @param end         end time
+   * @param count       number of items created
    */
   public static void reportDeserialization(int maxDuration,
                                            long start,

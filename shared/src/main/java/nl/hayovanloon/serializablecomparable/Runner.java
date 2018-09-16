@@ -13,26 +13,22 @@ import java.util.List;
 public class Runner {
 
   private static Runner instance = null;
-
+  /** data serializer/deserializer */
+  protected final Serializer serializer;
   /** serialized item sizes */
   private final List<Integer> sizes = new LinkedList<>();
   /** serialized item creation timestamps */
   private final List<Long> timestamps = new LinkedList<>();
-
-  /** start time */
-  private long start = -1;
-  /** start time */
-  private long deserializationStart = -1;
-
   /** maximum simulation duration in seconds */
   private final int maxDuration;
   /** number of iterations over data set */
   private final int cycles;
   /** data generator/reader */
   private final Generator generator;
-
-  /** data serializer/deserializer */
-  protected final Serializer serializer;
+  /** start time */
+  private long start = -1;
+  /** start time */
+  private long deserializationStart = -1;
 
   private Runner(int cycles, int maxDuration, Generator generator,
                  Serializer serializer) {
@@ -46,9 +42,9 @@ public class Runner {
    * Used by Protobuf simulation (which' serializer could not comply to the
    * interface)
    *
-   * @param cycles       number of times to iterate over the data set
-   * @param maxDuration  maximum phase duration in seconds
-   * @param generator    data generator
+   * @param cycles      number of times to iterate over the data set
+   * @param maxDuration maximum phase duration in seconds
+   * @param generator   data generator
    */
   protected Runner(int cycles, int maxDuration, Generator generator) {
     this(cycles, maxDuration, generator, null);
@@ -138,7 +134,7 @@ public class Runner {
   protected long iterate(Iterable<LocalMessage> messages) throws IOException {
     long count = 0;
 
-    final long endAt =  getSerializationPhaseLimit();
+    final long endAt = getSerializationPhaseLimit();
     for (LocalMessage x : messages) {
       if (Instant.now().toEpochMilli() >= endAt) {
         return count;
@@ -153,7 +149,7 @@ public class Runner {
   }
 
   /**
-   * Creates a serialized
+   * Creates a serialized data set
    *
    * @param messages messages to serialize
    */
@@ -168,7 +164,7 @@ public class Runner {
   }
 
   private int isEquivalent(List<LocalMessage> messages,
-                               List<byte[]> bytes) throws IOException {
+                           List<byte[]> bytes) throws IOException {
     final Iterator<LocalMessage> iterMessage = messages.iterator();
     final Iterator<byte[]> iterBytes = bytes.iterator();
 

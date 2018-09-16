@@ -1,7 +1,6 @@
 package nl.hayovanloon.serializablecomparable.protobuf;
 
 import com.google.protobuf.Message;
-
 import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Nested;
 import nl.hayovanloon.serializablecomparable.Simple;
@@ -32,7 +31,9 @@ public final class NestedPbOps {
     if (!(message instanceof Nested)) {
       throw new IllegalArgumentException("expected Simple instance");
     }
-    final Nested nested = (Nested)message;
+
+    final Nested nested = (Nested) message;
+
     final NestedPb.Builder builder = NestedPb.newBuilder()
         .setStringValue(nested.getStringValue())
         .setLongValue(nested.getLongValue())
@@ -54,11 +55,14 @@ public final class NestedPbOps {
     if (!(message instanceof NestedPb)) {
       throw new IllegalArgumentException("expected Simple instance");
     }
-    final NestedPb n = (NestedPb)message;
+
+    final NestedPb n = (NestedPb) message;
+
     final List<Simple> simples = new ArrayList<>();
     for (SimplePb s : n.getSimplesList()) {
       simples.add(SimplePbOps.toLocal(s));
     }
+
     return new Nested(n.getStringValue(), n.getLongValue(),
         n.getIntValue(), n.getDoubleValue(), n.getFloatValue(),
         n.getBoolValue(), n.getLongListList(),

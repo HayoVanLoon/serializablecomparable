@@ -1,7 +1,6 @@
 package nl.hayovanloon.serializablecomparable.protobuf;
 
 import com.google.protobuf.Message;
-
 import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Simple;
 import nl.hayovanloon.serializablecomparable.protobuf.generated.SimplePb;
@@ -27,7 +26,7 @@ public final class SimplePbOps {
     if (!(message instanceof Simple)) {
       throw new IllegalArgumentException("expected Simple instance");
     }
-    final Simple simple = (Simple)message;
+    final Simple simple = (Simple) message;
     return SimplePb.newBuilder()
         .setStringValue(simple.getStringValue())
         .setLongValue(simple.getLongValue())
