@@ -26,23 +26,34 @@ public final class SimplePbOps {
     if (!(message instanceof Simple)) {
       throw new IllegalArgumentException("expected Simple instance");
     }
+
     final Simple simple = (Simple) message;
-    return SimplePb.newBuilder()
-        .setStringValue(simple.getStringValue())
+
+    final SimplePb.Builder builder = SimplePb.newBuilder()
         .setLongValue(simple.getLongValue())
         .setIntValue(simple.getIntValue())
         .setDoubleValue(simple.getDoubleValue())
         .setFloatValue(simple.getFloatValue())
-        .setBoolValue(simple.isBoolValue())
-        .build();
+        .setBoolValue(simple.isBoolValue());
+
+    if (simple.getStringValue() != null) {
+      builder.setStringValue(simple.getStringValue());
+    }
+
+    return builder.build();
   }
 
   public static Simple toLocal(Message message) {
     if (!(message instanceof SimplePb)) {
       throw new IllegalArgumentException("expected Simple instance");
     }
+
     final SimplePb s = (SimplePb) message;
-    return new Simple(s.getStringValue(), s.getLongValue(), s.getIntValue(),
+
+    final String nulled = s.getStringValue().isEmpty()
+        ? null : s.getStringValue();
+
+    return new Simple(nulled, s.getLongValue(), s.getIntValue(),
         s.getDoubleValue(), s.getFloatValue(), s.getBoolValue());
   }
 }

@@ -35,17 +35,25 @@ public final class NestedPbOps {
     final Nested nested = (Nested) message;
 
     final NestedPb.Builder builder = NestedPb.newBuilder()
-        .setStringValue(nested.getStringValue())
         .setLongValue(nested.getLongValue())
         .setIntValue(nested.getIntValue())
         .setDoubleValue(nested.getDoubleValue())
         .setFloatValue(nested.getFloatValue())
-        .setBoolValue(nested.isBoolValue())
-        .setSimple(SimplePbOps.from(nested.getSimple()))
-        .addAllLongList(nested.getLongList());
+        .setBoolValue(nested.isBoolValue());
 
-    for (Simple simple : nested.getSimples()) {
-      builder.addSimples(SimplePbOps.from(simple));
+    if (nested.getStringValue() != null) {
+      builder.setStringValue(nested.getStringValue());
+    }
+    if (nested.getSimple() != null) {
+      builder.setSimple(SimplePbOps.from(nested.getSimple()));
+    }
+    if (nested.getLongList() != null) {
+      builder.addAllLongList(nested.getLongList());
+    }
+    if (nested.getSimples() != null) {
+      for (Simple simple : nested.getSimples()) {
+        builder.addSimples(SimplePbOps.from(simple));
+      }
     }
 
     return builder.build();
@@ -58,12 +66,15 @@ public final class NestedPbOps {
 
     final NestedPb n = (NestedPb) message;
 
+    final String nulled = n.getStringValue().isEmpty()
+        ? null : n.getStringValue();
+
     final List<Simple> simples = new ArrayList<>();
     for (SimplePb s : n.getSimplesList()) {
       simples.add(SimplePbOps.toLocal(s));
     }
 
-    return new Nested(n.getStringValue(), n.getLongValue(),
+    return new Nested(nulled, n.getLongValue(),
         n.getIntValue(), n.getDoubleValue(), n.getFloatValue(),
         n.getBoolValue(), n.getLongListList(),
         SimplePbOps.toLocal(n.getSimple()), simples);

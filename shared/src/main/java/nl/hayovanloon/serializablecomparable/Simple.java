@@ -35,16 +35,16 @@ public class Simple implements Serializable, LocalMessage {
    */
   public static Simple createRandom() {
     final StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < 128; i += 1) {
+    for (int i = 0; i < Math.random() * 96 + 32; i += 1) {
       int j = (int) (Math.random() * ('z' - 'a'));
       sb.append((char) ('a' + j));
     }
     return new Simple(
-        sb.toString(),
-        (long) (Math.random() * Long.MAX_VALUE),
-        (int) (Math.random() * Integer.MAX_VALUE),
-        Math.random() * Double.MAX_VALUE,
-        (float) (Math.random() * Float.MAX_VALUE),
+        Math.random() >.8 ? null : sb.toString(),
+        Math.random() >.8 ? 0 : (long) (Math.random() * Long.MAX_VALUE),
+        Math.random() >.8 ? 0 : (int) (Math.random() * Integer.MAX_VALUE),
+        Math.random() >.8 ? 0 : Math.random() * Double.MAX_VALUE,
+        Math.random() >.8 ? 0 :(float) (Math.random() * Float.MAX_VALUE),
         Math.random() > .5
     );
   }

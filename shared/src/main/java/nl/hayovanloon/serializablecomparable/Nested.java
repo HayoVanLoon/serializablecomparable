@@ -47,13 +47,17 @@ public class Nested implements Serializable, LocalMessage {
     final Simple filler = Simple.createRandom();
     final Simple simple = Simple.createRandom();
     final List<Long> longList = new ArrayList<>();
-    for (int i = 0; i < 16; i += 1) {
+
+    for (int i = 0; i < Math.random() * 16; i += 1) {
       longList.add((long) (Math.random() * Long.MAX_VALUE));
     }
+
     final List<Simple> simpleList = new ArrayList<>();
-    for (int i = 0; i < 16; i += 1) {
+
+    for (int i = 0; i < Math.random() * 16; i += 1) {
       simpleList.add(Simple.createRandom());
     }
+
     return new Nested(
         filler.getStringValue(),
         filler.getLongValue(),
