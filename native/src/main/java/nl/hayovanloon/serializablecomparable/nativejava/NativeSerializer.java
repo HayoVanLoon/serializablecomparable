@@ -1,5 +1,6 @@
 package nl.hayovanloon.serializablecomparable.nativejava;
 
+import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Serializer;
 
 import java.io.ByteArrayInputStream;
@@ -16,7 +17,7 @@ public class NativeSerializer implements Serializer {
     return "Native";
   }
 
-  public byte[] serialize(Object o) throws IOException {
+  public byte[] serialize(LocalMessage o) throws IOException {
     try (
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutput oos = new ObjectOutputStream(bos)
@@ -26,8 +27,9 @@ public class NativeSerializer implements Serializer {
     }
   }
 
-  public <T> T deserialize(byte[] serialized,
-                           Class<T> type) throws IOException {
+  public <T extends LocalMessage> T deserialize(byte[] serialized,
+                                                Class<T> type)
+      throws IOException {
     try (
         ByteArrayInputStream bis = new ByteArrayInputStream(serialized);
         ObjectInputStream ois = new ObjectInputStream(bis)

@@ -153,4 +153,43 @@ public class Nested implements Serializable, LocalMessage {
         ", simples=" + simples +
         '}';
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Nested)) return false;
+
+    Nested nested = (Nested) o;
+
+    if (longValue != nested.longValue) return false;
+    if (intValue != nested.intValue) return false;
+    if (Double.compare(nested.doubleValue, doubleValue) != 0) return false;
+    if (Float.compare(nested.floatValue, floatValue) != 0) return false;
+    if (boolValue != nested.boolValue) return false;
+    if (stringValue != null ? !stringValue.equals(nested.stringValue) : nested.stringValue != null)
+      return false;
+    if (longList != null ? !longList.equals(nested.longList) : nested.longList != null)
+      return false;
+    if (simple != null ? !simple.equals(nested.simple) : nested.simple != null)
+      return false;
+    return simples != null ? simples.equals(nested.simples) : nested.simples == null;
+  }
+
+  @Override
+  public int hashCode() {
+    int result;
+    long temp;
+    result = stringValue != null ? stringValue.hashCode() : 0;
+    result = 31 * result + (int) (longValue ^ (longValue >>> 32));
+    result = 31 * result + intValue;
+    temp = Double.doubleToLongBits(doubleValue);
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
+    result = 31 * result +
+        (floatValue != +0.0f ? Float.floatToIntBits(floatValue) : 0);
+    result = 31 * result + (boolValue ? 1 : 0);
+    result = 31 * result + (longList != null ? longList.hashCode() : 0);
+    result = 31 * result + (simple != null ? simple.hashCode() : 0);
+    result = 31 * result + (simples != null ? simples.hashCode() : 0);
+    return result;
+  }
 }

@@ -15,31 +15,24 @@ public class Runner {
   private static Runner instance = null;
 
   /** serialized item sizes */
-  protected final List<Integer> sizes = new LinkedList<>();
-
+  private final List<Integer> sizes = new LinkedList<>();
   /** serialized item creation timestamps */
-  protected final List<Long> timestamps = new LinkedList<>();
-
-  /** number of iterations over data set */
-  protected final int cycles;
-
-  /** maximum simulation duration in seconds */
-  protected final int maxDuration;
-
-  /** data generator/reader */
-  protected final Generator generator;
-
-  /** data serializer */
-  private final Serializer serializer;
-
-  /** counter for items created */
-  protected long count = 0;
+  private final List<Long> timestamps = new LinkedList<>();
 
   /** start time */
-  protected long startTimestamp = -1;
+  private long start = -1;
+  /** start time */
+  private long deserializationStart = -1;
 
-  /** end time */
-  protected long endTimestamp = -1;
+  /** maximum simulation duration in seconds */
+  private final int maxDuration;
+  /** number of iterations over data set */
+  private final int cycles;
+  /** data generator/reader */
+  private final Generator generator;
+
+  /** data serializer/deserializer */
+  protected final Serializer serializer;
 
   private Runner(int cycles, int maxDuration, Generator generator,
                  Serializer serializer) {
@@ -53,9 +46,9 @@ public class Runner {
    * Used by Protobuf simulation (which' serializer could not comply to the
    * interface)
    *
-   * @param cycles
-   * @param maxDuration
-   * @param generator
+   * @param cycles       number of times to iterate over the data set
+   * @param maxDuration  maximum phase duration in seconds
+   * @param generator    data generator
    */
   protected Runner(int cycles, int maxDuration, Generator generator) {
     this(cycles, maxDuration, generator, null);
@@ -77,41 +70,141 @@ public class Runner {
    *
    * @return the serialization name
    */
-  protected String getName() {
+  private String getName() {
     return serializer.getName();
+  }
+
+  /**
+   * Returns the class of the messages
+   *
+   * @return LocalMessage class
+   */
+  public Class<? extends LocalMessage> getType() {
+    return generator.getType();
+  }
+
+  private long getSerializationPhaseLimit() {
+    return start + maxDuration * 1000;
+  }
+
+  private long getDeserializationPhaseLimit() {
+    return deserializationStart + maxDuration * 1000;
   }
 
   /**
    * Runs the simulation
    */
-  public void run() throws IOException, ClassNotFoundException {
-    final List<LocalMessage> messages = generator.retrieve();
+  public final void run() throws IOException, ClassNotFoundException {
+    List<LocalMessage> messages = generator.retrieve();
 
-    startTimestamp = Instant.now().toEpochMilli();
+    int count = 0;
+    start = Instant.now().toEpochMilli();
     for (int i = 0; i < cycles; i += 1) {
-      iterate(messages);
+      count += iterate(messages);
     }
-    endTimestamp = Instant.now().toEpochMilli();
+    long end = Instant.now().toEpochMilli();
 
-    Report.report(getName(), sizes, timestamps, startTimestamp,
-        endTimestamp, count, maxDuration);
+    Report.reportSerialization(getName(), sizes, timestamps, start,
+        end, count, maxDuration);
+
+    final List<byte[]> serialized = getSerialized(messages);
+
+    int diffs = isEquivalent(messages, serialized);
+    if (diffs > 0) {
+      System.out.println("inequality detected " + diffs);
+    }
+
+    messages = null;
+    System.gc();
+
+    long deserializationCount = 0;
+    deserializationStart = Instant.now().toEpochMilli();
+    for (int i = 0; i < cycles; i += 1) {
+      deserializationCount += iterateDeserializer(serialized);
+    }
+    long deserializationEnd = Instant.now().toEpochMilli();
+
+    Report.reportDeserialization(maxDuration, deserializationStart,
+        deserializationEnd, deserializationCount);
   }
 
   /**
    * Iterates over the data set, serializing the items and gathering
-   * measurements on those
+   * measurements on those. Returns the number of items serialized.
    *
    * @param messages messages to serialize
+   * @return number of items serialized
    */
-  protected void iterate(Iterable<LocalMessage> messages) throws IOException {
-    final Iterator<LocalMessage> iter = messages.iterator();
-    while (iter.hasNext() &&
-        Instant.now().toEpochMilli() - startTimestamp < maxDuration * 1000) {
-      final LocalMessage x = iter.next();
+  protected long iterate(Iterable<LocalMessage> messages) throws IOException {
+    long count = 0;
+
+    final long endAt =  getSerializationPhaseLimit();
+    for (LocalMessage x : messages) {
+      if (Instant.now().toEpochMilli() >= endAt) {
+        return count;
+      }
       final byte[] serialized = serializer.serialize(x);
       sizes.add(serialized.length);
       timestamps.add(Instant.now().toEpochMilli());
       count += 1;
     }
+
+    return count;
+  }
+
+  /**
+   * Creates a serialized
+   *
+   * @param messages messages to serialize
+   */
+  private List<byte[]> getSerialized(List<LocalMessage> messages)
+      throws IOException {
+
+    final LinkedList<byte[]> result = new LinkedList<>();
+    for (LocalMessage message : messages) {
+      result.add(serializer.serialize(message));
+    }
+    return result;
+  }
+
+  private int isEquivalent(List<LocalMessage> messages,
+                               List<byte[]> bytes) throws IOException {
+    final Iterator<LocalMessage> iterMessage = messages.iterator();
+    final Iterator<byte[]> iterBytes = bytes.iterator();
+
+    int diffs = 0;
+    while (iterMessage.hasNext() && iterBytes.hasNext()) {
+      final LocalMessage deserialized =
+          serializer.deserialize(iterBytes.next(), getType());
+      if (!deserialized.equals(iterMessage.next())) {
+        diffs += 1;
+      }
+    }
+
+    return diffs;
+  }
+
+  /**
+   * Iterates over the serialized data set, deserializing the items. Returns the
+   * number of items deserialized.
+   *
+   * @param serialized byte arrays to deserialize
+   * @return number of items deserialized
+   */
+  private long iterateDeserializer(List<byte[]> serialized)
+      throws IOException {
+
+    long count = 0;
+
+    final long endAt = getDeserializationPhaseLimit();
+    for (byte[] bytes : serialized) {
+      if (Instant.now().toEpochMilli() >= endAt) {
+        return count;
+      }
+      serializer.deserialize(bytes, getType());
+      count += 1;
+    }
+
+    return count;
   }
 }

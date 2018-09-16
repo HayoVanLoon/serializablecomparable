@@ -3,6 +3,7 @@ package nl.hayovanloon.serializablecomparable.kryo;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Serializer;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +18,7 @@ public class KryoSerializer implements Serializer {
     return "Kryo";
   }
 
-  public byte[] serialize(Object o) throws IOException {
+  public byte[] serialize(LocalMessage o) throws IOException {
     try (
         ByteArrayOutputStream bos = new ByteArrayOutputStream()
     ) {
@@ -29,7 +30,8 @@ public class KryoSerializer implements Serializer {
     }
   }
 
-  public <T> T deserialize(byte[] serialized, Class<T> type) {
+  public <T extends LocalMessage> T deserialize(byte[] serialized,
+                                                Class<T> type) {
     final Input input = new Input(serialized);
     return KRYO.readObject(input, type);
   }

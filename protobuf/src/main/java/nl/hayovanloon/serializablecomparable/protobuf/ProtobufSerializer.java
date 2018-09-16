@@ -1,25 +1,45 @@
 package nl.hayovanloon.serializablecomparable.protobuf;
 
 import com.google.protobuf.Message;
+import nl.hayovanloon.serializablecomparable.LocalMessage;
+import nl.hayovanloon.serializablecomparable.Serializer;
+import nl.hayovanloon.serializablecomparable.Simple;
+import nl.hayovanloon.serializablecomparable.protobuf.generated.NestedPb;
+import nl.hayovanloon.serializablecomparable.protobuf.generated.SimplePb;
 
 import java.io.IOException;
+import java.util.function.Function;
 
 
-/**
- * Custom Serializer since the deserialize method could not fulfill the generic
- * {@link nl.hayovanloon.serializablecomparable.Serializer} contract.
- */
-public class ProtobufSerializer {
+public class ProtobufSerializer implements Serializer {
 
-  public byte[] serialize(Message m) {
-    return m.toByteArray();
+  private final Function<LocalMessage, Message> fromLocal;
+  private final Function<Message, LocalMessage> toLocal;
+
+
+  public ProtobufSerializer(Function<LocalMessage, Message> fromLocal,
+                            Function<Message, LocalMessage> toLocal) {
+    this.fromLocal = fromLocal;
+    this.toLocal = toLocal;
+  }
+
+  @Override
+  public String getName() {
+    return "Protobuf";
+  }
+
+  public byte[] serialize(LocalMessage o) {
+    return fromLocal.apply(o).toByteArray();
   }
 
   @SuppressWarnings("unchecked")
-  public <T extends Message> T deserialize(byte[] serialized, T.Builder builder)
+  @Override
+  public <T extends LocalMessage> T deserialize(byte[] serialized,
+                                                Class<T> type)
       throws IOException {
 
-    builder.mergeFrom(serialized);
-    return (T) builder.build();
+    final Message.Builder builder = type == Simple.class
+        ? SimplePb.newBuilder() : NestedPb.newBuilder();
+    return (T) toLocal.apply(builder.mergeFrom(serialized).build());
   }
 }

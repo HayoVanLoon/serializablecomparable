@@ -1,6 +1,6 @@
 SAMPLE_SIZE := 10000
 CYCLES := 1000
-MAX_DURATION := 60
+MAX_DURATION := 30
 
 clean:
 	mvn clean
