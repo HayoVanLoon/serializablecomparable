@@ -80,7 +80,7 @@ public final class Report {
             "\n%s\n",
         count / 1000,
         BigDecimal.valueOf(acc / (double) count).intValue(),
-        end - start, maxDuration,
+        (end - start) / 1000, maxDuration,
         BigDecimal.valueOf((end - start) / (double) count * 1000)
             .setScale(2, BigDecimal.ROUND_HALF_DOWN).toPlainString(),
         table.toString()
