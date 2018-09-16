@@ -38,18 +38,6 @@ public class Runner {
     this.serializer = serializer;
   }
 
-  /**
-   * Used by Protobuf simulation (which' serializer could not comply to the
-   * interface)
-   *
-   * @param cycles      number of times to iterate over the data set
-   * @param maxDuration maximum phase duration in seconds
-   * @param generator   data generator
-   */
-  protected Runner(int cycles, int maxDuration, Generator generator) {
-    this(cycles, maxDuration, generator, null);
-  }
-
   public static Runner getInstance(Serializer serializer, String... args) {
     final Generator generator = Generator.of(args);
     int n = Integer.valueOf(args[3]);
