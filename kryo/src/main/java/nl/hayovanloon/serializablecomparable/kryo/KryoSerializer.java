@@ -14,10 +14,12 @@ public class KryoSerializer implements Serializer {
 
   private static final Kryo KRYO = new Kryo();
 
+  @Override
   public String getName() {
     return "Kryo";
   }
 
+  @Override
   public byte[] serialize(LocalMessage o) throws IOException {
     try (
         ByteArrayOutputStream bos = new ByteArrayOutputStream()
@@ -30,6 +32,7 @@ public class KryoSerializer implements Serializer {
     }
   }
 
+  @Override
   public <T extends LocalMessage> T deserialize(byte[] serialized,
                                                 Class<T> type) {
     final Input input = new Input(serialized);

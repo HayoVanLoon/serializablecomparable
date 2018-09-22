@@ -17,6 +17,7 @@ public class NativeSerializer implements Serializer {
     return "Native";
   }
 
+  @Override
   public byte[] serialize(LocalMessage o) throws IOException {
     try (
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -27,6 +28,7 @@ public class NativeSerializer implements Serializer {
     }
   }
 
+  @Override
   public <T extends LocalMessage> T deserialize(byte[] serialized,
                                                 Class<T> type)
       throws IOException {
