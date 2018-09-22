@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Nested;
 import nl.hayovanloon.serializablecomparable.Simple;
-import nl.hayovanloon.serializablecomparable.protobuf.generated.NestedPb;
-import nl.hayovanloon.serializablecomparable.protobuf.generated.SimplePb;
+import nl.hayovanloon.serializablecomparable.protobuf.pb.NestedPb;
+import nl.hayovanloon.serializablecomparable.protobuf.pb.SimplePb;
 
 import java.util.ArrayList;
 import java.util.List;

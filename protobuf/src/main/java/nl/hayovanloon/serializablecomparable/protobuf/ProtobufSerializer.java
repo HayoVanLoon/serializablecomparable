@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Serializer;
 import nl.hayovanloon.serializablecomparable.Simple;
-import nl.hayovanloon.serializablecomparable.protobuf.generated.NestedPb;
-import nl.hayovanloon.serializablecomparable.protobuf.generated.SimplePb;
+import nl.hayovanloon.serializablecomparable.protobuf.pb.NestedPb;
+import nl.hayovanloon.serializablecomparable.protobuf.pb.SimplePb;
 
 import java.io.IOException;
 import java.util.function.Function;
@@ -28,6 +28,7 @@ public class ProtobufSerializer implements Serializer {
     return "Protobuf";
   }
 
+  @Override
   public byte[] serialize(LocalMessage o) {
     return fromLocal.apply(o).toByteArray();
   }

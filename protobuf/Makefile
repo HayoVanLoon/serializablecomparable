@@ -4,10 +4,8 @@ MAX_DURATION := 30
 
 clean:
 	mvn clean
-	rm -f src/main/java/nl/hayovanloon/serializablecomparable/protobuf/generated/*
 
 build: clean
-	protoc --java_out=src/main/java messages.proto
 	mvn compile assembly:single
 
 generate:
