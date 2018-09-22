@@ -43,9 +43,9 @@ public class Nested implements Serializable, LocalMessage {
    *
    * @return a new Nested object
    */
-  public static Nested createRandom() {
-    final Simple filler = Simple.createRandom();
-    final Simple simple = Simple.createRandom();
+  public static LocalMessage createRandom() {
+    final Simple filler = (Simple) Simple.createRandom();
+    final Simple simple = (Simple) Simple.createRandom();
     final List<Long> longList = new ArrayList<>();
 
     for (int i = 0; i < Math.random() * 16; i += 1) {
@@ -55,7 +55,7 @@ public class Nested implements Serializable, LocalMessage {
     final List<Simple> simpleList = new ArrayList<>();
 
     for (int i = 0; i < Math.random() * 16; i += 1) {
-      simpleList.add(Simple.createRandom());
+      simpleList.add((Simple) Simple.createRandom());
     }
 
     return new Nested(

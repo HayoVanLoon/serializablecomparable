@@ -4,15 +4,22 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import nl.hayovanloon.serializablecomparable.LocalMessage;
-import nl.hayovanloon.serializablecomparable.Serializer;
+import nl.hayovanloon.serializablecomparable.LocalMessageSerializer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 
-public class KryoSerializer implements Serializer {
+public class KryoSerializer<T extends LocalMessage>
+    extends LocalMessageSerializer {
 
   private static final Kryo KRYO = new Kryo();
+
+  private final Class<T> type;
+
+  public KryoSerializer(Class<T> type) {
+    this.type = type;
+  }
 
   @Override
   public String getName() {
@@ -33,8 +40,7 @@ public class KryoSerializer implements Serializer {
   }
 
   @Override
-  public <T extends LocalMessage> T deserialize(byte[] serialized,
-                                                Class<T> type) {
+  public LocalMessage deserialize(byte[] serialized) {
     final Input input = new Input(serialized);
     return KRYO.readObject(input, type);
   }

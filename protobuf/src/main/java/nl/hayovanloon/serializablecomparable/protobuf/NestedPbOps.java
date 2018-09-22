@@ -27,7 +27,7 @@ public final class NestedPbOps {
    * @return a new NestedPb
    * @throws IllegalArgumentException when item passed is not a Nested
    */
-  public static NestedPb from(LocalMessage message) {
+  public static Message from(LocalMessage message) {
     if (!(message instanceof Nested)) {
       throw new IllegalArgumentException("expected Simple instance");
     }
@@ -45,21 +45,21 @@ public final class NestedPbOps {
       builder.setStringValue(nested.getStringValue());
     }
     if (nested.getSimple() != null) {
-      builder.setSimple(SimplePbOps.from(nested.getSimple()));
+      builder.setSimple((SimplePb) SimplePbOps.from(nested.getSimple()));
     }
     if (nested.getLongList() != null) {
       builder.addAllLongList(nested.getLongList());
     }
     if (nested.getSimples() != null) {
       for (Simple simple : nested.getSimples()) {
-        builder.addSimples(SimplePbOps.from(simple));
+        builder.addSimples((SimplePb) SimplePbOps.from(simple));
       }
     }
 
     return builder.build();
   }
 
-  public static LocalMessage toLocal(Message message) {
+  public static Nested toLocal(Message message) {
     if (!(message instanceof NestedPb)) {
       throw new IllegalArgumentException("expected Simple instance");
     }

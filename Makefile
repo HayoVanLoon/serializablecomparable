@@ -44,10 +44,10 @@ run-protobuf:
 build-protobuflean:
 	$(MAKE) -C protobuflean build
 
-generate-protobuf:
+generate-protobuflean:
 	$(MAKE) -C protobuflean generate
 
-run-protobuf:
+run-protobuflean:
 	@$(MAKE) -C protobuflean run
 
 clean:

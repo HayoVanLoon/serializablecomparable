@@ -33,7 +33,7 @@ public class Simple implements Serializable, LocalMessage {
    *
    * @return a new Simple object
    */
-  public static Simple createRandom() {
+  public static LocalMessage createRandom() {
     final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < Math.random() * 96 + 32; i += 1) {
       int j = (int) (Math.random() * ('z' - 'a'));

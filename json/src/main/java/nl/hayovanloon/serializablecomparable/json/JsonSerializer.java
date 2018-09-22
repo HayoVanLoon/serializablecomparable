@@ -2,14 +2,21 @@ package nl.hayovanloon.serializablecomparable.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import nl.hayovanloon.serializablecomparable.LocalMessage;
-import nl.hayovanloon.serializablecomparable.Serializer;
+import nl.hayovanloon.serializablecomparable.LocalMessageSerializer;
 
 import java.io.IOException;
 
 
-public class JsonSerializer implements Serializer {
+public class JsonSerializer<T extends LocalMessage>
+    extends LocalMessageSerializer {
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  private final Class<T> type;
+
+  public JsonSerializer(Class<T> type) {
+    this.type = type;
+  }
 
   @Override
   public String getName() {
@@ -22,9 +29,7 @@ public class JsonSerializer implements Serializer {
   }
 
   @Override
-  public <T extends LocalMessage> T deserialize(byte[] bytes,
-                                                Class<T> type)
-      throws IOException {
+  public LocalMessage deserialize(byte[] bytes) throws IOException {
     return OBJECT_MAPPER.readValue(bytes, type);
   }
 }

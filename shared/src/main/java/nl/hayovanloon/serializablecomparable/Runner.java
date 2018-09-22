@@ -10,12 +10,12 @@ import java.util.List;
 /**
  * Class for running the simulation(s)
  */
-public class Runner {
+public class Runner<T> {
 
   private static Runner instance = null;
 
   /** data serializer/deserializer */
-  private final Serializer serializer;
+  private final Serializer<T> serializer;
 
   /** serialized item sizes */
   protected final List<Integer> sizes = new LinkedList<>();
@@ -33,8 +33,10 @@ public class Runner {
   /** data generator/reader */
   private final Generator generator;
 
-  private Runner(int cycles, int maxDuration, Generator generator,
-                 Serializer serializer) {
+  private Runner(int cycles,
+                 int maxDuration,
+                 Generator generator,
+                 Serializer<T> serializer) {
     this.cycles = cycles;
     this.maxDuration = maxDuration;
     this.generator = generator;
@@ -45,8 +47,9 @@ public class Runner {
     this(cycles, maxDuration, generator, null);
   }
 
-  public static Runner getInstance(Serializer serializer, String... args) {
-    final Generator generator = Generator.of(args);
+  public static <U> Runner<?> getInstance(Serializer<U> serializer,
+                                          String... args) {
+    final Generator generator = Generator.of(localClassOf(args[1]), args[2]);
     if (args.length < 4) {
       System.out.println("missing cycles parameter at position 4");
       System.exit(1);
@@ -55,9 +58,13 @@ public class Runner {
     int maxDuration = args.length > 4 ? Integer.valueOf(args[4]) : 60;
 
     if (instance == null) {
-      instance = new Runner(n, maxDuration, generator, serializer);
+      instance = new Runner<>(n, maxDuration, generator, serializer);
     }
     return instance;
+  }
+
+  public static Class<? extends LocalMessage> localClassOf(String name) {
+    return "simple".equalsIgnoreCase(name) ? Simple.class : Nested.class;
   }
 
   /**
@@ -74,7 +81,7 @@ public class Runner {
    *
    * @return LocalMessage class
    */
-  private Class<? extends LocalMessage> getType() {
+  private Class<?> getType() {
     return generator.getType();
   }
 
@@ -102,7 +109,7 @@ public class Runner {
    * Runs the simulation
    */
   public void run() throws IOException, ClassNotFoundException {
-    List<LocalMessage> messages = generator.retrieve();
+    List<T> messages = serializer.prepareInput(generator.retrieve());
 
     int count = 0;
     start = Instant.now().toEpochMilli();
@@ -142,11 +149,11 @@ public class Runner {
    * @param messages messages to serialize
    * @return number of items serialized
    */
-  protected long iterate(Iterable<LocalMessage> messages) throws IOException {
+  protected long iterate(Iterable<T> messages) throws IOException {
     long count = 0;
 
     final long endAt = getSerializationPhaseLimit();
-    for (LocalMessage x : messages) {
+    for (T x : messages) {
       if (Instant.now().toEpochMilli() >= endAt) {
         return count;
       }
@@ -164,25 +171,24 @@ public class Runner {
    *
    * @param messages messages to serialize
    */
-  private List<byte[]> getSerialized(List<LocalMessage> messages)
+  private List<byte[]> getSerialized(List<T> messages)
       throws IOException {
 
     final LinkedList<byte[]> result = new LinkedList<>();
-    for (LocalMessage message : messages) {
+    for (T message : messages) {
       result.add(serializer.serialize(message));
     }
     return result;
   }
 
-  private int isEquivalent(List<LocalMessage> messages,
+  private int isEquivalent(List<T> messages,
                            List<byte[]> bytes) throws IOException {
-    final Iterator<LocalMessage> iterMessage = messages.iterator();
+    final Iterator<T> iterMessage = messages.iterator();
     final Iterator<byte[]> iterBytes = bytes.iterator();
 
     int diffs = 0;
     while (iterMessage.hasNext() && iterBytes.hasNext()) {
-      final LocalMessage deserialized =
-          serializer.deserialize(iterBytes.next(), getType());
+      final T deserialized = serializer.deserialize(iterBytes.next());
       if (!deserialized.equals(iterMessage.next())) {
         diffs += 1;
       }
@@ -208,7 +214,7 @@ public class Runner {
       if (Instant.now().toEpochMilli() >= endAt) {
         return count;
       }
-      serializer.deserialize(bytes, getType());
+      serializer.deserialize(bytes);
       count += 1;
     }
 

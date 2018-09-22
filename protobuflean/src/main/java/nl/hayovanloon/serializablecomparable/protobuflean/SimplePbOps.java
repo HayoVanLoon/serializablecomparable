@@ -3,7 +3,7 @@ package nl.hayovanloon.serializablecomparable.protobuflean;
 import com.google.protobuf.Message;
 import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Simple;
-import nl.hayovanloon.serializablecomparable.protobuf.pb.SimplePb;
+import nl.hayovanloon.serializablecomparable.protobuflean.pb.SimplePb;
 
 
 /**

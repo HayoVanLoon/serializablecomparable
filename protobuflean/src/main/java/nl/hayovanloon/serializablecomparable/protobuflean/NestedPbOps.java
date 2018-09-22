@@ -4,8 +4,8 @@ import com.google.protobuf.Message;
 import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Nested;
 import nl.hayovanloon.serializablecomparable.Simple;
-import nl.hayovanloon.serializablecomparable.protobuf.pb.NestedPb;
-import nl.hayovanloon.serializablecomparable.protobuf.pb.SimplePb;
+import nl.hayovanloon.serializablecomparable.protobuflean.pb.NestedPb;
+import nl.hayovanloon.serializablecomparable.protobuflean.pb.SimplePb;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ public final class NestedPbOps {
    * @return a new NestedPb
    * @throws IllegalArgumentException when item passed is not a Nested
    */
-  public static NestedPb from(LocalMessage message) {
+  public static Message from(LocalMessage message) {
     if (!(message instanceof Nested)) {
       throw new IllegalArgumentException("expected Simple instance");
     }

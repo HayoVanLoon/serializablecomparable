@@ -24,38 +24,32 @@ public class Generator {
   /** Destination and/or source file */
   private final File file;
 
-  /** Item generator */
-  private final Supplier supplier;
-
   /** Message type ({@link Simple} or {@link Nested}) */
   private final Class<? extends LocalMessage> type;
 
-  public Generator(File file,
-                   Supplier<? extends LocalMessage> supplier,
-                   Class<? extends LocalMessage> type) {
+  public Generator(File file, Class<? extends LocalMessage> type) {
     this.file = file;
-    this.supplier = supplier;
     this.type = type;
+  }
+
+  public static Generator of(String[] args) {
+    return new Generator(
+        new File(args.length > 2 ? args[2] : "data.out"),
+        "simple".equalsIgnoreCase(args[2]) ? Simple.class : Nested.class);
   }
 
   /**
    * Factory method for a generator.
    *
-   * @param args command line arguments
+   * @param type class to use
+   * @param fileName  file name to store data set in or retrieve from
+   *
    * @return a new Generator
    */
-  public static Generator of(String[] args) {
-    final Supplier<LocalMessage> supplier;
-    final Class<? extends LocalMessage> type;
-    if (args.length > 1 && "simple".equals(args[1])) {
-      supplier = Simple::createRandom;
-      type = Simple.class;
-    } else {
-      supplier = Nested::createRandom;
-      type = Nested.class;
-    }
-    final String fileName = args.length > 2 ? args[2] : "data.out";
-    return new Generator(new File(fileName), supplier, type);
+  public static <U extends LocalMessage> Generator of(Class<U> type,
+                                                      String fileName) {
+    final File file = new File(fileName == null ? "data.out" :fileName);
+    return new Generator(file, type);
   }
 
   public Class<? extends LocalMessage> getType() {
@@ -68,6 +62,8 @@ public class Generator {
    * @param n number of items to create and serialize
    */
   public void generate(int n) throws IOException {
+    final Supplier<LocalMessage> supplier =
+        type == Simple.class ? Simple::createRandom : Nested::createRandom;
     try (
         FileOutputStream fos = new FileOutputStream(file);
         ObjectOutput oos = new ObjectOutputStream(fos)
@@ -85,7 +81,6 @@ public class Generator {
    */
   public List<LocalMessage> retrieve()
       throws IOException, ClassNotFoundException {
-
     try (
         FileInputStream fos = new FileInputStream(file);
         ObjectInputStream ois = new ObjectInputStream(fos)

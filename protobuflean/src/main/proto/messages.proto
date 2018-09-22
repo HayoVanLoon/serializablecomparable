@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package hayovanloon.serializablecomparable;
+package hayovanloon.serializablecomparable.lean;
 
-option java_package = "nl.hayovanloon.serializablecomparable.protobuf.pb";
+option java_package = "nl.hayovanloon.serializablecomparable.protobuflean.pb";
 option java_multiple_files = true;
 
 message SimplePb {
