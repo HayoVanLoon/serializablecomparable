@@ -40,11 +40,11 @@ public class Simple implements Serializable, LocalMessage {
       sb.append((char) ('a' + j));
     }
     return new Simple(
-        Math.random() >.8 ? null : sb.toString(),
-        Math.random() >.8 ? 0 : (long) (Math.random() * Long.MAX_VALUE),
-        Math.random() >.8 ? 0 : (int) (Math.random() * Integer.MAX_VALUE),
-        Math.random() >.8 ? 0 : Math.random() * Double.MAX_VALUE,
-        Math.random() >.8 ? 0 :(float) (Math.random() * Float.MAX_VALUE),
+        Math.random() > .8 ? null : sb.toString(),
+        Math.random() > .8 ? 0 : (long) (Math.random() * Long.MAX_VALUE),
+        Math.random() > .8 ? 0 : (int) (Math.random() * Integer.MAX_VALUE),
+        Math.random() > .8 ? 0 : Math.random() * Double.MAX_VALUE,
+        Math.random() > .8 ? 0 : (float) (Math.random() * Float.MAX_VALUE),
         Math.random() > .5
     );
   }

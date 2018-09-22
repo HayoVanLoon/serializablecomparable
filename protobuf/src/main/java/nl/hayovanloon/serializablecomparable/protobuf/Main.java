@@ -6,8 +6,6 @@ import nl.hayovanloon.serializablecomparable.Nested;
 import nl.hayovanloon.serializablecomparable.Runner;
 import nl.hayovanloon.serializablecomparable.Serializer;
 import nl.hayovanloon.serializablecomparable.Simple;
-import nl.hayovanloon.serializablecomparable.protobuf.pb.NestedPb;
-import nl.hayovanloon.serializablecomparable.protobuf.pb.SimplePb;
 
 import java.io.IOException;
 

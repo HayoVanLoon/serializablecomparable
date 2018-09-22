@@ -12,7 +12,8 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <main.class>nl.hayovanloon.serializablecomparable.protobuflean.Main</main.class>
+    <main.class>nl.hayovanloon.serializablecomparable.protobuflean.Main
+    </main.class>
     <protoc.path>/usr/local/bin/protoc</protoc.path>
   </properties>
 

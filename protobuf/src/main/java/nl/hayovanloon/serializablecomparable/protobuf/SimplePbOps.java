@@ -3,8 +3,8 @@ package nl.hayovanloon.serializablecomparable.protobuf;
 import com.google.protobuf.Message;
 import nl.hayovanloon.serializablecomparable.LocalMessage;
 import nl.hayovanloon.serializablecomparable.Simple;
-import nl.hayovanloon.serializablecomparable.protobuf.pb.NestedPb;
 import nl.hayovanloon.serializablecomparable.protobuf.pb.SimplePb;
+
 
 /**
  * Utility class for {@link SimplePb} operations.

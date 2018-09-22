@@ -33,8 +33,8 @@ public interface Serializer<T> {
    * Prepares the raw input. The usual implementation should simply return the
    * input.
    *
-   * @param retrieved  data gathered from data set file
-   * @return  a list of serializable items
+   * @param retrieved data gathered from data set file
+   * @return a list of serializable items
    */
   List<T> prepareInput(List<LocalMessage> retrieved);
 }

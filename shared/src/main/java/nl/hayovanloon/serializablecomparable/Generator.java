@@ -41,14 +41,13 @@ public class Generator {
   /**
    * Factory method for a generator.
    *
-   * @param type class to use
-   * @param fileName  file name to store data set in or retrieve from
-   *
+   * @param type     class to use
+   * @param fileName file name to store data set in or retrieve from
    * @return a new Generator
    */
   public static <U extends LocalMessage> Generator of(Class<U> type,
                                                       String fileName) {
-    final File file = new File(fileName == null ? "data.out" :fileName);
+    final File file = new File(fileName == null ? "data.out" : fileName);
     return new Generator(file, type);
   }
 
