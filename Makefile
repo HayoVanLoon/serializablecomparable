@@ -5,11 +5,14 @@ TYPE := 'nested'
 build-shared:
 	$(MAKE) -C shared build
 
+build-gson:
+	$(MAKE) -C gson build
+
+run-gson:
+	@$(MAKE) -C gson run
+
 build-json:
 	$(MAKE) -C json build
-
-generate-json:
-	$(MAKE) -C json generate
 
 run-json:
 	@$(MAKE) -C json run
@@ -17,17 +20,11 @@ run-json:
 build-kryo:
 	$(MAKE) -C kryo build
 
-generate-kryo:
-	$(MAKE) -C kryo generate
-
 run-kryo:
 	@$(MAKE) -C kryo run
 
 build-native:
 	$(MAKE) -C native build
-
-generate-native:
-	$(MAKE) -C native generate
 
 run-native:
 	@$(MAKE) -C native run
@@ -35,17 +32,11 @@ run-native:
 build-protobuf:
 	$(MAKE) -C protobuf build
 
-generate-protobuf:
-	$(MAKE) -C protobuf generate
-
 run-protobuf:
 	@$(MAKE) -C protobuf run
 
 build-protobuflean:
 	$(MAKE) -C protobuflean build
-
-generate-protobuflean:
-	$(MAKE) -C protobuflean generate
 
 run-protobuflean:
 	@$(MAKE) -C protobuflean run
@@ -58,12 +49,13 @@ clean:
 	$(MAKE) -C protobuf clean
 	$(MAKE) -C protobuflean clean
 
-build: build-shared build-json build-kryo build-native build-protobuf build-protobuflean
+build: build-shared build-gson build-json build-kryo build-native build-protobuf build-protobuflean
 
 generate:
 	$(MAKE) -C native generate TYPE=nested DEST=$(DEST)
 
 run:
+	@$(MAKE) run-gson TYPE=$(TYPE) SRC=$(SRC)
 	@$(MAKE) run-json TYPE=$(TYPE) SRC=$(SRC)
 	@$(MAKE) run-kryo TYPE=$(TYPE) SRC=$(SRC)
 	@$(MAKE) run-native TYPE=$(TYPE) SRC=$(SRC)
