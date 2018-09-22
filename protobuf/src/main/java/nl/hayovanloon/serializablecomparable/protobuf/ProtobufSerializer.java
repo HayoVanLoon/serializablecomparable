@@ -32,7 +32,6 @@ public class ProtobufSerializer implements Serializer {
     return fromLocal.apply(o).toByteArray();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public <T extends LocalMessage> T deserialize(byte[] serialized,
                                                 Class<T> type)
@@ -40,6 +39,6 @@ public class ProtobufSerializer implements Serializer {
 
     final Message.Builder builder = type == Simple.class
         ? SimplePb.newBuilder() : NestedPb.newBuilder();
-    return (T) toLocal.apply(builder.mergeFrom(serialized).build());
+    return type.cast(toLocal.apply(builder.mergeFrom(serialized).build()));
   }
 }
