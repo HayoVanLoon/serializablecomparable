@@ -13,25 +13,22 @@ import java.util.List;
 public class Runner<T> {
 
   private static Runner instance = null;
-
+  /** serialized item sizes */
+  private final List<Integer> sizes = new LinkedList<>();
+  /** serialized item creation timestamps */
+  private final List<Long> timestamps = new LinkedList<>();
   /** data serializer/deserializer */
   private final Serializer<T> serializer;
-
-  /** serialized item sizes */
-  protected final List<Integer> sizes = new LinkedList<>();
-  /** serialized item creation timestamps */
-  protected final List<Long> timestamps = new LinkedList<>();
-  /** start time */
-  protected long start = -1;
-  /** start time */
-  protected long deserializationStart = -1;
-
   /** maximum simulation duration in seconds */
   private final int maxDuration;
   /** number of iterations over data set */
   private final int cycles;
   /** data generator/reader */
   private final Generator generator;
+  /** start time */
+  private long start = -1;
+  /** start time */
+  private long deserializationStart = -1;
 
   private Runner(int cycles,
                  int maxDuration,
@@ -41,10 +38,6 @@ public class Runner<T> {
     this.maxDuration = maxDuration;
     this.generator = generator;
     this.serializer = serializer;
-  }
-
-  public Runner(int cycles, int maxDuration, Generator generator) {
-    this(cycles, maxDuration, generator, null);
   }
 
   public static <U> Runner<?> getInstance(Serializer<U> serializer,
@@ -76,33 +69,12 @@ public class Runner<T> {
     return serializer.getName();
   }
 
-  /**
-   * Returns the class of the messages
-   *
-   * @return LocalMessage class
-   */
-  private Class<?> getType() {
-    return generator.getType();
-  }
-
-  protected long getSerializationPhaseLimit() {
+  private long getSerializationPhaseLimit() {
     return start + maxDuration * 1000;
   }
 
-  protected long getDeserializationPhaseLimit() {
+  private long getDeserializationPhaseLimit() {
     return deserializationStart + maxDuration * 1000;
-  }
-
-  protected Generator getGenerator() {
-    return generator;
-  }
-
-  protected int getCycles() {
-    return cycles;
-  }
-
-  protected int getMaxDuration() {
-    return maxDuration;
   }
 
   /**
@@ -149,7 +121,7 @@ public class Runner<T> {
    * @param messages messages to serialize
    * @return number of items serialized
    */
-  protected long iterate(Iterable<T> messages) throws IOException {
+  private long iterate(Iterable<T> messages) throws IOException {
     long count = 0;
 
     final long endAt = getSerializationPhaseLimit();
