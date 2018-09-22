@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 
-public class ProtobufLeanSerializer {
+class ProtobufLeanSerializer {
 
 
-  public String getName() {
+  String getName() {
     return "Protobuf-Lean";
   }
 
-  public byte[] serialize(Message m) {
+  byte[] serialize(Message m) {
     return m.toByteArray();
   }
 
-  public <T extends Message> T deserialize(byte[] serialized,
+  <T extends Message> T deserialize(byte[] serialized,
                                            Class<T> type)
       throws IOException {
 
