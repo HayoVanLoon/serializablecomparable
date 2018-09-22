@@ -13,15 +13,15 @@ public interface Serializer {
   String getName();
 
   /**
-   * Serializes the object into a byte array
+   * Serializes the {@link LocalMessage} into a byte array
    *
-   * @param o object to serialize
+   * @param o message to serialize
    * @return a byte array
    */
   byte[] serialize(LocalMessage o) throws IOException;
 
   /**
-   * Deserializes the byte array into an object
+   * Deserializes the byte array into a {@link LocalMessage}.
    *
    * @param bytes byte array to deserialize
    * @return a deserialised object

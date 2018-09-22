@@ -1,4 +1,13 @@
-package nl.hayovanloon.serializablecomparable;
+package nl.hayovanloon.serializablecomparable.protobuflean;
+
+import com.google.protobuf.Message;
+import nl.hayovanloon.serializablecomparable.Generator;
+import nl.hayovanloon.serializablecomparable.LocalMessage;
+import nl.hayovanloon.serializablecomparable.Nested;
+import nl.hayovanloon.serializablecomparable.Report;
+import nl.hayovanloon.serializablecomparable.Simple;
+import nl.hayovanloon.serializablecomparable.protobuf.pb.NestedPb;
+import nl.hayovanloon.serializablecomparable.protobuf.pb.SimplePb;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -10,42 +19,20 @@ import java.util.List;
 /**
  * Class for running the simulation(s)
  */
-public class Runner {
+public class Runner extends nl.hayovanloon.serializablecomparable.Runner{
 
   private static Runner instance = null;
-
   /** data serializer/deserializer */
-  private final Serializer serializer;
+  protected final ProtobufLeanSerializer serializer;
 
-  /** serialized item sizes */
-  protected final List<Integer> sizes = new LinkedList<>();
-  /** serialized item creation timestamps */
-  protected final List<Long> timestamps = new LinkedList<>();
-  /** start time */
-  protected long start = -1;
-  /** start time */
-  protected long deserializationStart = -1;
-
-  /** maximum simulation duration in seconds */
-  private final int maxDuration;
-  /** number of iterations over data set */
-  private final int cycles;
-  /** data generator/reader */
-  private final Generator generator;
 
   private Runner(int cycles, int maxDuration, Generator generator,
-                 Serializer serializer) {
-    this.cycles = cycles;
-    this.maxDuration = maxDuration;
-    this.generator = generator;
+                 ProtobufLeanSerializer serializer) {
+    super(cycles, maxDuration, generator);
     this.serializer = serializer;
   }
 
-  public Runner(int cycles, int maxDuration, Generator generator) {
-    this(cycles, maxDuration, generator, null);
-  }
-
-  public static Runner getInstance(Serializer serializer, String... args) {
+  public static Runner getInstance(ProtobufLeanSerializer serializer, String... args) {
     final Generator generator = Generator.of(args);
     if (args.length < 4) {
       System.out.println("missing cycles parameter at position 4");
@@ -69,50 +56,33 @@ public class Runner {
     return serializer.getName();
   }
 
-  /**
-   * Returns the class of the messages
-   *
-   * @return LocalMessage class
-   */
-  private Class<? extends LocalMessage> getType() {
-    return generator.getType();
-  }
-
-  protected long getSerializationPhaseLimit() {
-    return start + maxDuration * 1000;
-  }
-
-  protected long getDeserializationPhaseLimit() {
-    return deserializationStart + maxDuration * 1000;
-  }
-
-  protected Generator getGenerator() {
-    return generator;
-  }
-
-  protected int getCycles() {
-    return cycles;
-  }
-
-  protected int getMaxDuration() {
-    return maxDuration;
+  private List<Message> getData() throws IOException, ClassNotFoundException {
+    final LinkedList<Message> messages = new LinkedList<>();
+    for (LocalMessage localMessage : getGenerator().retrieve()) {
+      if (getGenerator().getType() == Simple.class) {
+        messages.add(SimplePbOps.from(localMessage));
+      } else {
+        messages.add(NestedPbOps.from(localMessage));
+      }
+    }
+    return messages;
   }
 
   /**
    * Runs the simulation
    */
-  public void run() throws IOException, ClassNotFoundException {
-    List<LocalMessage> messages = generator.retrieve();
+  public final void run() throws IOException, ClassNotFoundException {
+    List<Message> messages = getData();
 
     int count = 0;
     start = Instant.now().toEpochMilli();
-    for (int i = 0; i < cycles; i += 1) {
-      count += iterate(messages);
+    for (int i = 0; i < getCycles(); i += 1) {
+      count += iteratePb(messages);
     }
     long end = Instant.now().toEpochMilli();
 
     Report.reportSerialization(getName(), sizes, timestamps, start,
-        end, count, maxDuration);
+        end, count, getMaxDuration());
 
     final List<byte[]> serialized = getSerialized(messages);
 
@@ -126,12 +96,12 @@ public class Runner {
 
     long deserializationCount = 0;
     deserializationStart = Instant.now().toEpochMilli();
-    for (int i = 0; i < cycles; i += 1) {
+    for (int i = 0; i < getCycles(); i += 1) {
       deserializationCount += iterateDeserializer(serialized);
     }
     long deserializationEnd = Instant.now().toEpochMilli();
 
-    Report.reportDeserialization(maxDuration, deserializationStart,
+    Report.reportDeserialization(getMaxDuration(), deserializationStart,
         deserializationEnd, deserializationCount);
   }
 
@@ -142,15 +112,15 @@ public class Runner {
    * @param messages messages to serialize
    * @return number of items serialized
    */
-  protected long iterate(Iterable<LocalMessage> messages) throws IOException {
+  protected long iteratePb(Iterable<Message> messages) {
     long count = 0;
 
     final long endAt = getSerializationPhaseLimit();
-    for (LocalMessage x : messages) {
+    for (Message message : messages) {
       if (Instant.now().toEpochMilli() >= endAt) {
         return count;
       }
-      final byte[] serialized = serializer.serialize(x);
+      final byte[] serialized = serializer.serialize(message);
       sizes.add(serialized.length);
       timestamps.add(Instant.now().toEpochMilli());
       count += 1;
@@ -164,25 +134,29 @@ public class Runner {
    *
    * @param messages messages to serialize
    */
-  private List<byte[]> getSerialized(List<LocalMessage> messages)
-      throws IOException {
+  private List<byte[]> getSerialized(List<Message> messages) {
 
     final LinkedList<byte[]> result = new LinkedList<>();
-    for (LocalMessage message : messages) {
+    for (Message message : messages) {
       result.add(serializer.serialize(message));
     }
     return result;
   }
 
-  private int isEquivalent(List<LocalMessage> messages,
+  private Class<? extends Message> getMessageType() {
+    return getGenerator().getType() == Simple.class
+        ? SimplePb.class : NestedPb.class;
+  }
+
+  private int isEquivalent(List<Message> messages,
                            List<byte[]> bytes) throws IOException {
-    final Iterator<LocalMessage> iterMessage = messages.iterator();
+    final Iterator<Message> iterMessage = messages.iterator();
     final Iterator<byte[]> iterBytes = bytes.iterator();
 
     int diffs = 0;
     while (iterMessage.hasNext() && iterBytes.hasNext()) {
-      final LocalMessage deserialized =
-          serializer.deserialize(iterBytes.next(), getType());
+      final Message deserialized =
+          serializer.deserialize(iterBytes.next(), getMessageType());
       if (!deserialized.equals(iterMessage.next())) {
         diffs += 1;
       }
@@ -208,7 +182,7 @@ public class Runner {
       if (Instant.now().toEpochMilli() >= endAt) {
         return count;
       }
-      serializer.deserialize(bytes, getType());
+      serializer.deserialize(bytes, getMessageType());
       count += 1;
     }
 

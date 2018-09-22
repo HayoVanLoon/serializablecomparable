@@ -41,14 +41,24 @@ generate-protobuf:
 run-protobuf:
 	@$(MAKE) -C protobuf run
 
+build-protobuflean:
+	$(MAKE) -C protobuflean build
+
+generate-protobuf:
+	$(MAKE) -C protobuflean generate
+
+run-protobuf:
+	@$(MAKE) -C protobuflean run
+
 clean:
 	$(MAKE) -C shared clean
 	$(MAKE) -C json clean
 	$(MAKE) -C kryo clean
 	$(MAKE) -C native clean
 	$(MAKE) -C protobuf clean
+	$(MAKE) -C protobuflean clean
 
-build: build-shared build-json build-kryo build-native build-protobuf
+build: build-shared build-json build-kryo build-native build-protobuf build-protobuflean
 
 generate:
 	$(MAKE) -C native generate TYPE=nested DEST=$(DEST)
@@ -58,3 +68,4 @@ run:
 	@$(MAKE) run-kryo TYPE=$(TYPE) SRC=$(SRC)
 	@$(MAKE) run-native TYPE=$(TYPE) SRC=$(SRC)
 	@$(MAKE) run-protobuf TYPE=$(TYPE) SRC=$(SRC)
+	@$(MAKE) run-protobuflean TYPE=$(TYPE) SRC=$(SRC)
